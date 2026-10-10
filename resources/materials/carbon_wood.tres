@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WingMaterial" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/wing_material.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+material_id = &"carbon_wood"
+display_name = "Carbonwood"
+material_type = 1
+display_color = Color(0.35, 0.43, 0.46, 1)
+weight_factor = 0.28
+thrust_factor = 1.42
+score_value = 3.6
+unlock_cost = 60

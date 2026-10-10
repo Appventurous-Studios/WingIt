@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WingMaterial" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/wing_material.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+material_id = &"bamboo"
+display_name = "Bamboo"
+material_type = 1
+display_color = Color(0.72, 0.68, 0.52, 1)
+weight_factor = 0.42
+thrust_factor = 1.0
+score_value = 2.0
+unlock_cost = 0

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WingAbility" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/wing_ability.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+ability_id = &"gust_boost"
+display_name = "Gust Boost"
+description = "A quick thrust that speeds up your descent."
+action_type = 0
+fall_speed_delta = 260.0
+horizontal_impulse = 100.0
+duration = 0.85
+cooldown = 2.5
+display_color = Color(0.64, 0.85, 1, 1)

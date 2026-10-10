@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WingMaterial" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/wing_material.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+material_id = &"leather"
+display_name = "Leather"
+material_type = 0
+display_color = Color(0.55, 0.34, 0.23, 1)
+weight_factor = 0.55
+thrust_factor = 0.82
+score_value = 2.8
+unlock_cost = 35
