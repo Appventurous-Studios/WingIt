@@ -30,7 +30,8 @@ func calculate_stats() -> Dictionary:
 
 	var surface_area := maxf(0.1, span * size)
 	var mass := surface_area * (skin_weight + structure_weight)
-	var thrust := surface_area * structure_thrust * (1.0 + upgrade_level * 0.06)
+	var thrust := surface_area * (structure_thrust * 0.8 + skin_thrust * 0.2) \
+		* (1.0 + upgrade_level * 0.06)
 	var dexterity := 1.0 / maxf(0.25, size * (0.55 + mass * 0.45))
 	var cooldown_multiplier := clampf(0.55 + size * 0.45 + mass * 0.25, 0.65, 2.5)
 	var score := roundi(

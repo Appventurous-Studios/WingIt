@@ -22,6 +22,7 @@ var _hazard_radius := 15.0
 
 
 func _ready() -> void:
+	player.control_screen_width = world_width
 	player.apply_wing_build(GameProgress.wing_build)
 	_build_hud()
 	queue_redraw()

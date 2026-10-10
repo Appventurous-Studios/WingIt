@@ -31,6 +31,7 @@ var _thrust_time_left := 0.0
 var _glide_time_left := 0.0
 var _dash_time_left := 0.0
 var _dash_horizontal_speed := 0.0
+var _dexterity_multiplier := 1.0
 var _radius := 15.0
 
 
@@ -44,6 +45,10 @@ func apply_wing_build(build: WingBuild) -> void:
 	_equipped_actions.clear()
 	if wing_build != null:
 		_equipped_actions = wing_build.action_slots.duplicate()
+		var stats := wing_build.calculate_stats()
+		_dexterity_multiplier = clampf(0.8 + float(stats["dexterity"]) * 0.2, 0.75, 1.35)
+	else:
+		_dexterity_multiplier = 1.0
 	_cooldowns.resize(_equipped_actions.size())
 	for index in range(_cooldowns.size()):
 		_cooldowns[index] = 0.0
@@ -110,7 +115,7 @@ func _pointer_released(position: Vector2) -> void:
 		activate_action(1)
 	else:
 		_last_steer_direction = -1.0 if _input_start_position.x < control_screen_width * 0.5 else 1.0
-		velocity.x = _last_steer_direction * tap_horizontal_speed
+		velocity.x = _last_steer_direction * tap_horizontal_speed * _dexterity_multiplier
 
 
 func activate_action(slot_index: int) -> void:
@@ -140,8 +145,8 @@ func activate_action(slot_index: int) -> void:
 			velocity.y = maxf(min_fall_speed, velocity.y - ability.fall_speed_delta)
 		WingAbility.ActionType.FEATHER_DASH:
 			_dash_time_left = ability.duration
-			_dash_horizontal_speed = ability.horizontal_impulse
-			velocity.x = _last_steer_direction * ability.horizontal_impulse
+			_dash_horizontal_speed = ability.horizontal_impulse * _dexterity_multiplier
+			velocity.x = _last_steer_direction * _dash_horizontal_speed
 
 	action_used.emit(slot_index, ability)
 

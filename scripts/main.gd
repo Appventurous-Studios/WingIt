@@ -57,14 +57,14 @@ func _show_workshop() -> void:
 		materials_card,
 		"Skin",
 		GameProgress.get_available_materials(WingMaterial.MaterialType.SKIN),
-		_draft_wing.skin_material.material_id.to_string(),
+		str(_draft_wing.skin_material.material_id),
 		Callable(self, "_on_skin_selected")
 	)
 	_add_selector_row(
 		materials_card,
 		"Structure",
 		GameProgress.get_available_materials(WingMaterial.MaterialType.STRUCTURE),
-		_draft_wing.structure_material.material_id.to_string(),
+		str(_draft_wing.structure_material.material_id),
 		Callable(self, "_on_structure_selected")
 	)
 
@@ -99,7 +99,7 @@ func _show_workshop() -> void:
 			actions_card,
 			"Slot %d" % (slot_index + 1),
 			available_abilities,
-			current_ability.ability_id.to_string() if current_ability != null else "",
+			str(current_ability.ability_id) if current_ability != null else "",
 			Callable(self, "_on_action_selected").bind(slot_index)
 		)
 

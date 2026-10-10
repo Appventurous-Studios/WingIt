@@ -33,7 +33,7 @@ func get_available_materials(material_type: int) -> Array[WingMaterial]:
 	var available: Array[WingMaterial] = []
 	for material in material_catalog:
 		if material != null \
-		and owned_material_ids.has(material.material_id.to_string()) \
+		and owned_material_ids.has(str(material.material_id)) \
 		and material.material_type == material_type:
 			available.append(material)
 	return available
@@ -42,7 +42,7 @@ func get_available_materials(material_type: int) -> Array[WingMaterial]:
 func get_available_abilities() -> Array[WingAbility]:
 	var available: Array[WingAbility] = []
 	for ability in ability_catalog:
-		if ability != null and unlocked_ability_ids.has(ability.ability_id.to_string()):
+		if ability != null and unlocked_ability_ids.has(str(ability.ability_id)):
 			available.append(ability)
 	return available
 
@@ -67,15 +67,15 @@ func award_level_reward() -> String:
 	var reward_name := ""
 
 	for material in material_catalog:
-		if material != null and not owned_material_ids.has(material.material_id.to_string()):
-			owned_material_ids.append(material.material_id.to_string())
+		if material != null and not owned_material_ids.has(str(material.material_id)):
+			owned_material_ids.append(str(material.material_id))
 			reward_name = material.display_name
 			break
 
 	if reward_name.is_empty():
 		for ability in ability_catalog:
-			if ability != null and not unlocked_ability_ids.has(ability.ability_id.to_string()):
-				unlocked_ability_ids.append(ability.ability_id.to_string())
+			if ability != null and not unlocked_ability_ids.has(str(ability.ability_id)):
+				unlocked_ability_ids.append(str(ability.ability_id))
 				reward_name = ability.display_name
 				break
 
@@ -111,10 +111,10 @@ func _validate_build() -> void:
 	if skins.is_empty() or structures.is_empty():
 		return
 	if wing_build.skin_material == null \
-	or not owned_material_ids.has(wing_build.skin_material.material_id.to_string()):
+	or not owned_material_ids.has(str(wing_build.skin_material.material_id)):
 		wing_build.skin_material = skins[0]
 	if wing_build.structure_material == null \
-	or not owned_material_ids.has(wing_build.structure_material.material_id.to_string()):
+	or not owned_material_ids.has(str(wing_build.structure_material.material_id)):
 		wing_build.structure_material = structures[0]
 
 	var available_abilities := get_available_abilities()
@@ -124,7 +124,7 @@ func _validate_build() -> void:
 		wing_build.action_slots.pop_back()
 	for index in range(wing_build.action_slots.size()):
 		var ability := wing_build.action_slots[index]
-		if ability == null or not unlocked_ability_ids.has(ability.ability_id.to_string()):
+		if ability == null or not unlocked_ability_ids.has(str(ability.ability_id)):
 			wing_build.action_slots[index] = available_abilities[index % available_abilities.size()] \
 				if not available_abilities.is_empty() else null
 
@@ -171,11 +171,11 @@ func _save_progress() -> void:
 	config.set_value("wing", "size", wing_build.size)
 	config.set_value("wing", "accent_color", wing_build.accent_color)
 	config.set_value("wing", "upgrade_level", wing_build.upgrade_level)
-	config.set_value("wing", "skin_material", wing_build.skin_material.material_id.to_string())
-	config.set_value("wing", "structure_material", wing_build.structure_material.material_id.to_string())
+	config.set_value("wing", "skin_material", str(wing_build.skin_material.material_id))
+	config.set_value("wing", "structure_material", str(wing_build.structure_material.material_id))
 	var action_ids: Array[String] = []
 	for ability in wing_build.action_slots:
-		action_ids.append(ability.ability_id.to_string() if ability != null else "")
+		action_ids.append(str(ability.ability_id) if ability != null else "")
 	config.set_value("wing", "action_slots", action_ids)
 	config.save(SAVE_PATH)
 
