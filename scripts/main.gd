@@ -184,7 +184,7 @@ func _on_structure_selected(index: int, option: OptionButton) -> void:
 	_refresh_draft_display()
 
 
-func _on_action_selected(index: int, slot_index: int, option: OptionButton) -> void:
+func _on_action_selected(index: int, option: OptionButton, slot_index: int) -> void:
 	if slot_index >= _draft_wing.action_slots.size():
 		_draft_wing.action_slots.resize(slot_index + 1)
 	_draft_wing.action_slots[slot_index] = GameProgress.find_ability(
@@ -309,9 +309,9 @@ func _add_selector_row(
 			continue
 		var item_id := ""
 		if item is WingMaterial:
-			item_id = item.material_id.to_string()
+			item_id = str(item.material_id)
 		elif item is WingAbility:
-			item_id = item.ability_id.to_string()
+			item_id = str(item.ability_id)
 		option.add_item(item.display_name)
 		option.set_item_metadata(option.item_count - 1, item_id)
 		if item_id == selected_id:
