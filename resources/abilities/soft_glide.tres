@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WingAbility" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/wing_ability.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+ability_id = &"soft_glide"
+display_name = "Soft Glide"
+description = "A brief lift that slows your fall."
+action_type = 1
+fall_speed_delta = 260.0
+horizontal_impulse = 0.0
+duration = 1.2
+cooldown = 3.2
+display_color = Color(0.69, 0.89, 0.78, 1)

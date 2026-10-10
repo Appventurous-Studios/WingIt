@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="WingBuild" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/wing_build.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/materials/canvas.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/materials/bamboo.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/abilities/gust_boost.tres" id="4"]
+[ext_resource type="Resource" path="res://resources/abilities/feather_dash.tres" id="5"]
+
+[resource]
+script = ExtResource("1")
+skin_material = ExtResource("2")
+structure_material = ExtResource("3")
+accent_color = Color(0.92, 0.72, 0.37, 1)
+span = 1.0
+size = 1.0
+upgrade_level = 0
+action_slot_count = 2
+action_slots = Array[ExtResource("4"), ExtResource("5")]
