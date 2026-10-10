@@ -10,6 +10,7 @@ var _active_flight: FlightController
 
 
 func _ready() -> void:
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_show_home()
 
 
@@ -38,7 +39,6 @@ func _show_home() -> void:
 
 func _show_workshop() -> void:
 	_draft_wing = GameProgress.wing_build.duplicate(true) as WingBuild
-	_workshop_notice = ""
 	var page := _new_page("WING FORGE", "Shape your wing, equip two actions, and take it into the next drop.")
 	var stats_card := _add_section(page, "DESIGN PREVIEW")
 	_wing_preview = WingPreview.new()
@@ -50,6 +50,7 @@ func _show_workshop() -> void:
 	_refresh_draft_display()
 	if not _workshop_notice.is_empty():
 		_add_label(page, _workshop_notice, 15)
+		_workshop_notice = ""
 
 	var materials_card := _add_section(page, "MATERIALS")
 	_add_selector_row(
@@ -79,7 +80,7 @@ func _show_workshop() -> void:
 		_refresh_draft_display()
 	)
 	var color_row := HBoxContainer.new()
-	color_row.add_child(_add_label(color_row, "Accent color", 15))
+	_add_label(color_row, "Accent color", 15)
 	var color_picker := ColorPickerButton.new()
 	color_picker.color = _draft_wing.accent_color
 	color_picker.custom_minimum_size = Vector2(80.0, 44.0)
@@ -183,7 +184,7 @@ func _on_structure_selected(index: int, option: OptionButton) -> void:
 	_refresh_draft_display()
 
 
-func _on_action_selected(index: int, option: OptionButton, slot_index: int) -> void:
+func _on_action_selected(index: int, slot_index: int, option: OptionButton) -> void:
 	if slot_index >= _draft_wing.action_slots.size():
 		_draft_wing.action_slots.resize(slot_index + 1)
 	_draft_wing.action_slots[slot_index] = GameProgress.find_ability(

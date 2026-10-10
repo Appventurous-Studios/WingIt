@@ -25,10 +25,12 @@ var _equipped_actions: Array[WingAbility] = []
 var _cooldowns: Array[float] = []
 var _input_start_position := Vector2.ZERO
 var _input_start_time := 0.0
+var _pointer_is_down := false
 var _last_steer_direction := 1.0
 var _thrust_time_left := 0.0
 var _glide_time_left := 0.0
 var _dash_time_left := 0.0
+var _dash_horizontal_speed := 0.0
 var _radius := 15.0
 
 
@@ -66,7 +68,14 @@ func _physics_process(delta: float) -> void:
 		velocity.y + gravity * delta,
 		max_fall_speed * fall_multiplier
 	)
-	velocity.x = move_toward(velocity.x, 0.0, horizontal_brake * delta)
+	if _dash_time_left > 0.0:
+		velocity.x = move_toward(
+			velocity.x,
+			_last_steer_direction * _dash_horizontal_speed,
+			horizontal_brake * delta
+		)
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, horizontal_brake * delta)
 	move_and_slide()
 	global_position.x = clampf(global_position.x, _radius + 12.0, control_screen_width - _radius - 12.0)
 
@@ -85,11 +94,15 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _pointer_pressed(position: Vector2) -> void:
+	_pointer_is_down = true
 	_input_start_position = position
 	_input_start_time = Time.get_ticks_msec() / 1000.0
 
 
 func _pointer_released(position: Vector2) -> void:
+	if not _pointer_is_down:
+		return
+	_pointer_is_down = false
 	var held_time := Time.get_ticks_msec() / 1000.0 - _input_start_time
 	if _input_start_position.distance_to(position) >= swipe_action_threshold:
 		activate_action(0)
@@ -127,7 +140,8 @@ func activate_action(slot_index: int) -> void:
 			velocity.y = maxf(min_fall_speed, velocity.y - ability.fall_speed_delta)
 		WingAbility.ActionType.FEATHER_DASH:
 			_dash_time_left = ability.duration
-			velocity.x += _last_steer_direction * ability.horizontal_impulse
+			_dash_horizontal_speed = ability.horizontal_impulse
+			velocity.x = _last_steer_direction * ability.horizontal_impulse
 
 	action_used.emit(slot_index, ability)
 
@@ -141,12 +155,16 @@ func is_action_ready(slot_index: int) -> bool:
 func _draw() -> void:
 	var skin_color := Color(0.62, 0.69, 0.72, 1.0)
 	var structure_color := Color(0.86, 0.77, 0.56, 1.0)
+	var accent_color := Color(0.9, 0.76, 0.42, 1.0)
+	var skin_texture: Texture2D
 	var wing_scale := 1.0
 	if wing_build != null:
 		if wing_build.skin_material != null:
 			skin_color = wing_build.skin_material.display_color
+			skin_texture = wing_build.skin_material.display_texture
 		if wing_build.structure_material != null:
 			structure_color = wing_build.structure_material.display_color
+		accent_color = wing_build.accent_color
 		wing_scale = wing_build.span * wing_build.size
 
 	var half_span := 31.0 * wing_scale
@@ -158,8 +176,29 @@ func _draw() -> void:
 		Vector2(half_span * 0.76, 11.0),
 		Vector2(half_span, -18.0),
 	])
-	draw_colored_polygon(wing_shape, skin_color)
+	_draw_wing(wing_shape, skin_color, skin_texture)
 	draw_line(Vector2.ZERO, Vector2(-half_span, -12.0), structure_color, 3.0)
 	draw_line(Vector2.ZERO, Vector2(half_span, -12.0), structure_color, 3.0)
+	draw_line(Vector2(0.0, -7.0), Vector2(0.0, 7.0), accent_color, 3.0)
 	draw_circle(Vector2.ZERO, _radius, body_color)
 	draw_circle(Vector2(0.0, -4.0), 4.0, Color(0.13, 0.16, 0.18, 1.0))
+
+
+func _draw_wing(points: PackedVector2Array, color: Color, texture: Texture2D) -> void:
+	if texture == null:
+		draw_colored_polygon(points, color)
+		return
+
+	var min_point := points[0]
+	var max_point := points[0]
+	for point in points:
+		min_point = min_point.min(point)
+		max_point = max_point.max(point)
+	var extent := max_point - min_point
+	var uvs := PackedVector2Array()
+	for point in points:
+		uvs.append(Vector2(
+			(point.x - min_point.x) / maxf(extent.x, 1.0) * texture.get_width(),
+			(point.y - min_point.y) / maxf(extent.y, 1.0) * texture.get_height()
+		))
+	draw_colored_polygon(points, Color.WHITE, uvs, texture)
